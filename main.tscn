@@ -1,0 +1,58 @@
+[gd_scene load_steps=3 format=3 uid="uid://yd383j63u5d"]
+
+[ext_resource type="Script" uid="uid://c80kv1f0glyl7" path="res://main.gd" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://c588x7bcdouaf" path="res://http_request.gd" id="1_ig7tw"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_0xm2m")
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+script = ExtResource("1_ig7tw")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="textbox" type="LineEdit" parent="CanvasLayer"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -84.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 48
+placeholder_text = "ENTER TEXT"
+alignment = 1
+keep_editing_on_text_submit = true
+
+[node name="CurrentWord" type="Label" parent="CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 48
+text = "111"
+
+[node name="TimeLeft" type="Label" parent="CanvasLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -82.0
+offset_bottom = 67.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 48
+text = "10"
+
+[node name="FlameTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+autostart = true
+
+[connection signal="request_completed" from="HTTPRequest" to="HTTPRequest" method="_on_request_completed"]
+[connection signal="text_changed" from="CanvasLayer/textbox" to="." method="_on_line_edit_text_changed"]

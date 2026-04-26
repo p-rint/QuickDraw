@@ -12,7 +12,7 @@ func _ready():
 	fetch_words()
 
 func fetch_words():
-	var url = "https://random-word-api.herokuapp.com/word?number=10"  # Adjust for more words
+	var url = "https://random-word-api.herokuapp.com/word?number=10&diff=1"  # Adjust for more words
 	request(url)
 	print(2)
 

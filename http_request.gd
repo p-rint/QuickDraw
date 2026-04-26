@@ -1,6 +1,6 @@
 extends HTTPRequest
 
-@onready var main: Node2D = $".."
+@onready var main: Node3D = $"../.."
 
 
 var test = ["111", "2222", "3333", "8888"]
@@ -28,3 +28,4 @@ func _on_request_completed(result: int, response_code: int, headers: PackedStrin
 		# now, spawn word objects in the game
 	else:
 		print("Failed to fetch words")
+		

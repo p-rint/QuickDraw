@@ -1,17 +1,19 @@
-extends Node2D
+extends Node3D
 
-var words = []
+var words = ["111", "2222", "3333", "8888"] #These are just placeholders
 var curWord : String
 
-@onready var textbox: LineEdit = $CanvasLayer/textbox
-@onready var wordLabel: Label = $CanvasLayer/CurrentWord
-@onready var flame_timer: Timer = $FlameTimer
-@onready var timeLeftLabel: Label = $CanvasLayer/TimeLeft
+@onready var textbox: LineEdit = $FlameStuff/CanvasLayer/textbox
+@onready var wordLabel: Label = $FlameStuff/CanvasLayer/CurrentWord
+@onready var flame_timer: Timer = $FlameStuff/FlameTimer
+@onready var timeLeftLabel: Label = $FlameStuff/CanvasLayer/TimeLeft
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
+	setWord() #remove when the api works
+	
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -35,8 +37,8 @@ func addTime():
 		flame_timer.start(flame_timer.time_left + 2)
 	
 
-func _on_line_edit_text_changed(new_text: String) -> void:
+
+func _on_textbox_text_changed(new_text: String) -> void:
 	if new_text == curWord:
 		print("Finished!!!")
 		cycleWord()
-		

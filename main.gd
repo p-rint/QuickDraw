@@ -1,6 +1,6 @@
 extends Node3D
 
-var words = ["111", "2222", "3333", "8888"] #These are just placeholders
+var words = ["work", "hole", "dairy", "organisation", "unfair", "abortion", "oppose", "characteristic", "thank", "straighten"] #These are just placeholders
 var curWord : String
 
 @onready var textbox: LineEdit = $FlameStuff/CanvasLayer/textbox
@@ -18,13 +18,15 @@ var curWord : String
 var finishedWord = false
 var anticipating = false
 
-var panAnims = ["Pan1", "Pan2", "Pan3"]
+var panAnims = ["Pan1", "Pan2", "Pan3", "Pan4"]
 
+var dead = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
 	await get_tree().create_timer(2).timeout
+	$FlameStuff/CanvasLayer/Load.visible = false
 	print(words == http_request.test)
 	setWord() #remove when the api works (NVM)
 	runGame()
@@ -41,22 +43,28 @@ func setWord():
 		wordLabel.text = curWord
 
 func cycleWord():
+	finishedWord = false
 	wordLabel.visible = false
+	dead = false
 	textbox.text = ""
 	words.remove_at(0)
 	setWord()
 
 func die():
 	animPlr.play("PlayerDed")
-	wordLabel.text = "DEAD \n nice try."
+	$Audio/MetalPipeClang.play(.17)
+	wordLabel.text = "DEAD \n Nice try."
+	dead = true
 
 func runGame():
+	if words.is_empty():
+		$FlameStuff/CanvasLayer/End.visible = true
+		return
 	animPlr.stop()
 	#Anticipation
 	anticipating = true
-	animPlr.play("Pan1")
 	finishedWord = false
-	wait_timer.start(randf_range(1,1))
+	wait_timer.start(randf_range(4,10))
 	print("pt1")
 	await wait_timer.timeout
 	anticipating = false
@@ -66,7 +74,7 @@ func runGame():
 	animPlr.play("SHOOT!!!")
 	textbox.grab_focus()
 	wordLabel.visible = true
-	time_left.start((randf_range(2,3)))
+	time_left.start(( (words[0].length() * .3) + .5)) #.2 seconds per character, + .2 seconds
 	print("pt2")
 	
 	# Did ya win?
@@ -74,8 +82,10 @@ func runGame():
 	animPlr.stop()
 	if finishedWord: #if you win
 		animPlr.play("EnemyDed")
+		$Audio/FahhhKcgAXfs.play(.18)
 	else:
 		die()
+		
 	print("pt3")
 	
 	await get_tree().create_timer(3).timeout
@@ -85,14 +95,22 @@ func runGame():
 
 func anticipate():
 	if not animPlr.is_playing():
-		animPlr.play(panAnims[randi_range(0,1)])
+		animPlr.play(panAnims[randi_range(0, panAnims.size() - 1 )])
 		print("a")
 	
 
 func _on_textbox_text_changed(new_text: String) -> void:
-	if new_text == curWord:
+	if new_text == curWord and not dead:
 		print("Finished!!!")
 		time_left.start(.01)
 		
 		finishedWord = true
 		wordLabel.text = "POW!!!"
+		
+func uhh():
+	print("ye")
+
+
+
+func _on_button_pressed() -> void:
+	get_tree().change_scene_to_file("res://main.tscn")

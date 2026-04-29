@@ -21,7 +21,7 @@ func fetch_words():
 func _on_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
 	if response_code == 200:
 		var json = JSON.parse_string(body.get_string_from_utf8())
-		main.words = json  # Assuming it returns an array of strings
+		#main.words = json  # Assuming it returns an array of strings
 		
 		print("Fetched words: ", main.words)
 		main.setWord()

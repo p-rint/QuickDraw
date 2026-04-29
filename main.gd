@@ -47,9 +47,11 @@ func cycleWord():
 	setWord()
 
 func die():
+	animPlr.play("PlayerDed")
 	wordLabel.text = "DEAD \n nice try."
 
 func runGame():
+	animPlr.stop()
 	#Anticipation
 	anticipating = true
 	animPlr.play("Pan1")
@@ -60,6 +62,8 @@ func runGame():
 	anticipating = false
 	
 	#FIRE!!!! (type word, quick)
+	animPlr.stop()
+	animPlr.play("SHOOT!!!")
 	textbox.grab_focus()
 	wordLabel.visible = true
 	time_left.start((randf_range(2,3)))
@@ -67,27 +71,28 @@ func runGame():
 	
 	# Did ya win?
 	await time_left.timeout
+	animPlr.stop()
 	if finishedWord: #if you win
 		animPlr.play("EnemyDed")
-		await get_tree().create_timer(3).timeout
-		cycleWord()
-		runGame()
 	else:
 		die()
 	print("pt3")
 	
+	await get_tree().create_timer(3).timeout
+	cycleWord()
+	runGame()
+	
 
 func anticipate():
-	while anticipating:
-		if not animPlr.is_playing():
-			animPlr.play(panAnims[randi_range(0,1)])
-			print("a")
+	if not animPlr.is_playing():
+		animPlr.play(panAnims[randi_range(0,1)])
+		print("a")
 	
 
 func _on_textbox_text_changed(new_text: String) -> void:
 	if new_text == curWord:
 		print("Finished!!!")
-		time_left.start(0)
+		time_left.start(.01)
 		
 		finishedWord = true
 		wordLabel.text = "POW!!!"

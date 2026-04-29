@@ -11,20 +11,31 @@ var curWord : String
 @onready var wait_timer: Timer = $FlameStuff/Timers/WaitTimer
 @onready var time_left: Timer = $FlameStuff/Timers/TimeLeft
 
+@onready var http_request: HTTPRequest = $FlameStuff/HTTPRequest
+@onready var animPlr: AnimationPlayer = $Camera3D/AnimationPlayer
+
 
 var finishedWord = false
+var anticipating = false
+
+var panAnims = ["Pan1", "Pan2", "Pan3"]
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
-	#setWord() #remove when the api works
+	await get_tree().create_timer(2).timeout
+	print(words == http_request.test)
+	setWord() #remove when the api works (NVM)
 	runGame()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	pass
+	if anticipating == true:
+		anticipate()
 
 func setWord():
+	print(words)
 	if not words.is_empty():
 		curWord = words[0]
 		wordLabel.text = curWord
@@ -40,11 +51,14 @@ func die():
 
 func runGame():
 	#Anticipation
+	anticipating = true
+	animPlr.play("Pan1")
 	finishedWord = false
-	wait_timer.start(randf_range(2,4))
+	wait_timer.start(randf_range(1,1))
 	print("pt1")
-	
 	await wait_timer.timeout
+	anticipating = false
+	
 	#FIRE!!!! (type word, quick)
 	textbox.grab_focus()
 	wordLabel.visible = true
@@ -53,14 +67,27 @@ func runGame():
 	
 	# Did ya win?
 	await time_left.timeout
-	if finishedWord:
+	if finishedWord: #if you win
+		animPlr.play("EnemyDed")
+		await get_tree().create_timer(3).timeout
 		cycleWord()
+		runGame()
 	else:
 		die()
 	print("pt3")
 	
 
+func anticipate():
+	while anticipating:
+		if not animPlr.is_playing():
+			animPlr.play(panAnims[randi_range(0,1)])
+			print("a")
+	
+
 func _on_textbox_text_changed(new_text: String) -> void:
 	if new_text == curWord:
 		print("Finished!!!")
+		time_left.start(0)
+		
 		finishedWord = true
+		wordLabel.text = "POW!!!"
